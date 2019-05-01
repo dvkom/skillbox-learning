@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!--
+  ~ Hibernate, Relational Persistence for Idiomatic Java
+  ~
+  ~ License: GNU Lesser General Public License (LGPL), version 2.1 or later.
+  ~ See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+  -->
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.objects">
+
+    <class name="Department" table="department">
+        <!-- Для реализации связи one-to-one ключевое поле в таблице department было заменено на head_id-->
+        <id name="headId" column="head_id" />
+        <property name="id" not-null="true"/>
+        <property name="name" not-null="true" />
+        <property name="description" />
+        <!-- Для реализации связи one-to-one в классе Department создано поле head типа Employee-->
+        <one-to-one name="head" class="Employee"/>
+    </class>
+
+    <class name="Employee" table="employee">
+        <id name="id" column="id"><generator class="increment"/></id>
+        <property name="hireDate" type="date" column="hire_date"/>
+        <property name="salary" type="int" column="salary"/>
+        <property name="name" not-null="true" type="string" />
+        <property name="departmentId" not-null="true" type="int" column="department_id"/>
+    </class>
+
+</hibernate-mapping>
