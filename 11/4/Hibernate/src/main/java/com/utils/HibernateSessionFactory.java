@@ -3,6 +3,7 @@ package com.utils;
 import com.objects.Department;
 import com.objects.Employee;
 import com.objects.Vacation;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;

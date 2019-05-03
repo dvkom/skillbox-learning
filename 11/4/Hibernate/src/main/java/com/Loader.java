@@ -1,5 +1,8 @@
 package com;
 
+import com.dao.DepartmentDao;
+import com.dao.EmployeeDao;
+import com.dao.VacationDao;
 import com.objects.*;
 import com.services.DepartmentService;
 import com.services.EmployeeService;
@@ -11,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Loader {
@@ -22,147 +26,152 @@ public class Loader {
     fillVacationTable();
     printAllVacations();
     findAndPrintVacationProblems();
-
   }
 
   private static void fillVacationTable() {
-    VacationService vacationService = new VacationService();
-    EmployeeService employeeService = new EmployeeService();
+    VacationService vacationService = new VacationService(new VacationDao());
+    EmployeeService employeeService = new EmployeeService(new EmployeeDao());
+    Map<Integer, Employee> employees = employeeService.getAllEmployees()
+        .stream().collect(Collectors.toMap(Employee::getId, Function.identity()));
+    ArrayList<Vacation> vacations = new ArrayList<>();
     // Если таблица пуста, заполняем ее
     if (isVacationTableEmpty()) {
       // Отдел продаж, есть пересечения
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(2),
+      vacations.add(new Vacation(employees.get(2),
           LocalDate.of(2019, 1, 12),
           LocalDate.of(2019, 1, 30)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(2),
+      vacations.add(new Vacation(employees.get(2),
           LocalDate.of(2019, 3, 1),
           LocalDate.of(2019, 3, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(4),
+      vacations.add(new Vacation(employees.get(4),
           LocalDate.of(2019, 1, 20),
           LocalDate.of(2019, 2, 20)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(5),
+      vacations.add(new Vacation(employees.get(5),
           LocalDate.of(2019, 3, 10),
           LocalDate.of(2019, 3, 25)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(5),
+      vacations.add(new Vacation(employees.get(5),
           LocalDate.of(2019, 6, 20),
           LocalDate.of(2019, 7, 5)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(15),
+      vacations.add(new Vacation(employees.get(15),
           LocalDate.of(2019, 8, 1),
           LocalDate.of(2019, 8, 30)));
 
       // Отдел маркетинга, без пересечений
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(1),
+      vacations.add(new Vacation(employees.get(1),
           LocalDate.of(2019, 2, 1),
           LocalDate.of(2019, 2, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(1),
+      vacations.add(new Vacation(employees.get(1),
           LocalDate.of(2019, 8, 1),
           LocalDate.of(2019, 8, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(3),
+      vacations.add(new Vacation(employees.get(3),
           LocalDate.of(2019, 2, 15),
           LocalDate.of(2019, 2, 28)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(3),
+      vacations.add(new Vacation(employees.get(3),
           LocalDate.of(2019, 4, 1),
           LocalDate.of(2019, 4, 16)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(11),
+      vacations.add(new Vacation(employees.get(11),
           LocalDate.of(2019, 5, 1),
           LocalDate.of(2019, 5, 30)));
 
       // Отдел разработки, без пересечений
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(8),
+      vacations.add(new Vacation(employees.get(8),
           LocalDate.of(2019, 2, 1),
           LocalDate.of(2019, 2, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(8),
+      vacations.add(new Vacation(employees.get(8),
           LocalDate.of(2019, 8, 1),
           LocalDate.of(2019, 8, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(9),
+      vacations.add(new Vacation(employees.get(9),
           LocalDate.of(2019, 2, 15),
           LocalDate.of(2019, 2, 28)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(9),
+      vacations.add(new Vacation(employees.get(9),
           LocalDate.of(2019, 4, 1),
           LocalDate.of(2019, 4, 16)));
 
       // Отдел кадров, один сотрудник
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(7),
+      vacations.add(new Vacation(employees.get(7),
           LocalDate.of(2019, 5, 1),
           LocalDate.of(2019, 2, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(7),
+      vacations.add(new Vacation(employees.get(7),
           LocalDate.of(2019, 9, 1),
           LocalDate.of(2019, 8, 14)));
 
       // Бухгалтерия, есть пересечения
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(6),
+      vacations.add(new Vacation(employees.get(6),
           LocalDate.of(2019, 3, 1),
           LocalDate.of(2019, 3, 20)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(6),
+      vacations.add(new Vacation(employees.get(6),
           LocalDate.of(2019, 5, 1),
           LocalDate.of(2019, 5, 10)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(13),
+      vacations.add(new Vacation(employees.get(13),
           LocalDate.of(2019, 10, 1),
           LocalDate.of(2019, 10, 15)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(13),
+      vacations.add(new Vacation(employees.get(13),
           LocalDate.of(2019, 12, 15),
           LocalDate.of(2019, 12, 30)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(14),
+      vacations.add(new Vacation(employees.get(14),
           LocalDate.of(2019, 3, 15),
           LocalDate.of(2019, 3, 25)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(14),
+      vacations.add(new Vacation(employees.get(14),
           LocalDate.of(2019, 7, 1),
           LocalDate.of(2019, 7, 14)));
 
       // IT Отдел, есть пересечения
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(10),
+      vacations.add(new Vacation(employees.get(10),
           LocalDate.of(2019, 2, 1),
           LocalDate.of(2019, 2, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(10),
+      vacations.add(new Vacation(employees.get(10),
           LocalDate.of(2019, 8, 1),
           LocalDate.of(2019, 8, 14)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(12),
+      vacations.add(new Vacation(employees.get(12),
           LocalDate.of(2019, 4, 1),
           LocalDate.of(2019, 4, 12)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(12),
+      vacations.add(new Vacation(employees.get(12),
           LocalDate.of(2019, 6, 15),
           LocalDate.of(2019, 6, 28)));
-      vacationService.saveVacation(new Vacation(employeeService.findEmployeeById(12),
+      vacations.add(new Vacation(employees.get(12),
           LocalDate.of(2019, 8, 5),
           LocalDate.of(2019, 8, 10)));
+
+      vacationService.saveVacations(vacations);
     }
   }
 
   private static void findAndPrintVacationProblems() {
-    VacationService vacationService = new VacationService();
+    VacationService vacationService = new VacationService(new VacationDao());
     List<Vacation> vacations = vacationService.getAllVacations();
     Map<Department, Set<String>> intersections = new HashMap<>();
 
     // Предполагам, что у сотрудника нет пересечения отпусков с самим собой
-    // Возможно есть более эффективный алгоритм, чем brute force?
     for (int i = 0; i < vacations.size(); i++) {
       for (int j = i + 1; j < vacations.size(); j++) {
         Employee first = vacations.get(i).getEmployee();
         Employee second = vacations.get(j).getEmployee();
-        LocalDate firstStart = vacations.get(i).getStartDate();
-        LocalDate firstEnd = vacations.get(i).getEndDate();
-        LocalDate secondStart = vacations.get(j).getStartDate();
-        LocalDate secondEnd = vacations.get(j).getEndDate();
-        // Определяем факт пересечения
-        if (firstStart.isBefore(secondEnd) && firstEnd.isAfter(secondStart)
-            && first.getDepartment().getId().equals(second.getDepartment().getId())) {
-          // Ищем период пересечения
-          List<LocalDate> firstRange = firstStart.datesUntil(firstEnd)
-              .collect(Collectors.toList());
-          firstRange.add(firstEnd);
-          List<LocalDate> secondRange = secondStart.datesUntil(secondEnd)
-              .collect(Collectors.toList());
-          secondRange.add(secondEnd);
-          firstRange.retainAll(secondRange);
-
-          String intersection = String.format("С %s по %s: %s и %s", firstRange.get(0),
-              firstRange.get(firstRange.size() - 1), first.getName(), second.getName());
-          if (intersections.get(first.getDepartment()) == null) {
-            Set<String> vacationSet = new HashSet<>();
-            vacationSet.add(intersection);
-            intersections.put(first.getDepartment(), vacationSet);
-          } else {
-            intersections.get(first.getDepartment()).add(intersection);
+        // Определяем принадлежность к одному отделу
+        if (first.getDepartment().getId().equals(second.getDepartment().getId())) {
+          LocalDate firstStart = vacations.get(i).getStartDate();
+          LocalDate firstEnd = vacations.get(i).getEndDate();
+          LocalDate secondStart = vacations.get(j).getStartDate();
+          LocalDate secondEnd = vacations.get(j).getEndDate();
+          // Определяем факт пересечения
+          if (firstStart.isBefore(secondEnd) && firstEnd.isAfter(secondStart)) {
+            // Ищем даты пересечения
+            List<LocalDate> firstRange = firstStart.datesUntil(firstEnd)
+                .collect(Collectors.toList());
+            firstRange.add(firstEnd);
+            List<LocalDate> secondRange = secondStart.datesUntil(secondEnd)
+                .collect(Collectors.toList());
+            secondRange.add(secondEnd);
+            firstRange.retainAll(secondRange);
+            // Сохраняем диапазон
+            String intersection = String.format("С %s по %s: %s и %s", firstRange.get(0),
+                firstRange.get(firstRange.size() - 1), first.getName(), second.getName());
+            if (intersections.get(first.getDepartment()) == null) {
+              Set<String> vacationSet = new HashSet<>();
+              vacationSet.add(intersection);
+              intersections.put(first.getDepartment(), vacationSet);
+            } else {
+              intersections.get(first.getDepartment()).add(intersection);
+            }
           }
         }
       }
@@ -180,7 +189,7 @@ public class Loader {
   }
 
   private static void printAllVacations() {
-    VacationService vacationService = new VacationService();
+    VacationService vacationService = new VacationService(new VacationDao());
     vacationService.printAllVacations();
   }
 
@@ -194,7 +203,7 @@ public class Loader {
 
 
   private static void departmentCRUDDemonstration() {
-    DepartmentService departmentService = new DepartmentService();
+    DepartmentService departmentService = new DepartmentService(new DepartmentDao());
     departmentService.printAllDepartmentsWithEmployee();
 //    departmentService.printAllDepartments();
 
@@ -220,8 +229,8 @@ public class Loader {
   }
 
   private static void employeeCRUDDemonstration() {
-    EmployeeService employeeService = new EmployeeService();
-    DepartmentService departmentService = new DepartmentService();
+    EmployeeService employeeService = new EmployeeService(new EmployeeDao());
+    DepartmentService departmentService = new DepartmentService(new DepartmentDao());
     employeeService.printAllEmployees();
 
     Employee newEmployee = new Employee();

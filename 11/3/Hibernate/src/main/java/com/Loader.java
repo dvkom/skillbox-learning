@@ -16,18 +16,17 @@ public class Loader {
 
   public static void main(String[] args) {
     setUp();
-    session = sessionFactory.openSession();
-    session.beginTransaction();
-
-    printAllHeads();
-    printWrongHeads();
-    printLowSalaryHeads();
-    printBefore2010Heads();
-
-    session.getTransaction().commit();
-    session.close();
-
     if (sessionFactory != null) {
+      session = sessionFactory.openSession();
+      session.beginTransaction();
+
+      printAllHeads();
+      printWrongHeads();
+      printLowSalaryHeads();
+      printBefore2010Heads();
+
+      session.getTransaction().commit();
+      session.close();
       sessionFactory.close();
     }
   }
