@@ -13,9 +13,13 @@ import org.hibernate.Session;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
 
 public class Loader {
 
@@ -89,10 +93,10 @@ public class Loader {
 
       // Отдел кадров, один сотрудник
       vacations.add(new Vacation(employees.get(7),
-          LocalDate.of(2019, 5, 1),
+          LocalDate.of(2019, 2, 1),
           LocalDate.of(2019, 2, 14)));
       vacations.add(new Vacation(employees.get(7),
-          LocalDate.of(2019, 9, 1),
+          LocalDate.of(2019, 8, 1),
           LocalDate.of(2019, 8, 14)));
 
       // Бухгалтерия, есть пересечения
@@ -138,40 +142,53 @@ public class Loader {
 
   private static void findAndPrintVacationProblems() {
     VacationService vacationService = new VacationService(new VacationDao());
-    List<Vacation> vacations = vacationService.getAllVacations();
     Map<Department, Set<String>> intersections = new HashMap<>();
+    Map<Department, Map<Vacation, List<LocalDate>>> groupedVacationsMap =
+        vacationService.getAllVacations()
+            .stream()
+            // Сотрировка по посленей дате отпуска
+            .sorted(Collections.reverseOrder(Comparator.comparing(Vacation::getEndDate)))
+            // Собираем в Map
+            .collect( // Группируем по отделам
+                Collectors.groupingBy(v -> v.getEmployee().getDepartment(),
+                    Collectors.mapping(Function.identity(), toMap(Function.identity(), v -> Stream
+                        // Формируем множество дат в качестве Value
+                        .iterate(v.getStartDate(), date -> date.plusDays(1))
+                        .limit(ChronoUnit.DAYS.between(v.getStartDate(), v.getEndDate()
+                            .plusDays(1)))
+                        .collect(Collectors.toList()), (e1, e2) -> e2, LinkedHashMap::new)
+                    )
+                )
+            );
 
-    // Предполагам, что у сотрудника нет пересечения отпусков с самим собой
-    for (int i = 0; i < vacations.size(); i++) {
-      for (int j = i + 1; j < vacations.size(); j++) {
-        Employee first = vacations.get(i).getEmployee();
-        Employee second = vacations.get(j).getEmployee();
-        // Определяем принадлежность к одному отделу
-        if (first.getDepartment().getId().equals(second.getDepartment().getId())) {
-          LocalDate firstStart = vacations.get(i).getStartDate();
-          LocalDate firstEnd = vacations.get(i).getEndDate();
-          LocalDate secondStart = vacations.get(j).getStartDate();
-          LocalDate secondEnd = vacations.get(j).getEndDate();
-          // Определяем факт пересечения
-          if (firstStart.isBefore(secondEnd) && firstEnd.isAfter(secondStart)) {
-            // Ищем даты пересечения
-            List<LocalDate> firstRange = firstStart.datesUntil(firstEnd)
-                .collect(Collectors.toList());
-            firstRange.add(firstEnd);
-            List<LocalDate> secondRange = secondStart.datesUntil(secondEnd)
-                .collect(Collectors.toList());
-            secondRange.add(secondEnd);
-            firstRange.retainAll(secondRange);
-            // Сохраняем диапазон
-            String intersection = String.format("С %s по %s: %s и %s", firstRange.get(0),
-                firstRange.get(firstRange.size() - 1), first.getName(), second.getName());
-            if (intersections.get(first.getDepartment()) == null) {
+    for (Map.Entry<Department, Map<Vacation, List<LocalDate>>>
+        depEntry : groupedVacationsMap.entrySet()) {
+      Map<Vacation, List<LocalDate>> vacationsMap = new LinkedHashMap<>(depEntry.getValue());
+      while (!vacationsMap.isEmpty()) {
+        Map.Entry<Vacation, List<LocalDate>> firstEntry =
+            vacationsMap.entrySet().iterator().next();
+        vacationsMap.remove(firstEntry.getKey());
+        for (Map.Entry<Vacation, List<LocalDate>> entry : vacationsMap.entrySet()) {
+          List<LocalDate> intersection = new ArrayList<>(firstEntry.getValue());
+          intersection.retainAll(entry.getValue());
+          // Если пересечение со следующим есть, то сохраняем
+          if (intersection.size() != 0) {
+            String description = String.format(
+                "С %s по %s: %s и %s", intersection.get(0),
+                intersection.get(intersection.size() - 1),
+                firstEntry.getKey().getEmployee().getName(),
+                entry.getKey().getEmployee().getName()
+            );
+            if (intersections.get(depEntry.getKey()) == null) {
               Set<String> vacationSet = new HashSet<>();
-              vacationSet.add(intersection);
-              intersections.put(first.getDepartment(), vacationSet);
+              vacationSet.add(description);
+              intersections.put(depEntry.getKey(), vacationSet);
             } else {
-              intersections.get(first.getDepartment()).add(intersection);
+              intersections.get(depEntry.getKey()).add(description);
             }
+            // Если пересечений нет - прерываем дальнейшее сравнение
+          } else {
+            break;
           }
         }
       }
