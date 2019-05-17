@@ -27,3 +27,6 @@ target/
 out/
 .idea/
 *.iml
+
+*.jpg
+*.png
