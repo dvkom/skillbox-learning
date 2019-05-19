@@ -1,9 +1,9 @@
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Bank {
-  private ConcurrentHashMap<String, Account> accounts;
+  private volatile HashMap<String, Account> accounts;
   private final Random random = new Random();
 
   public synchronized boolean isFraud()
@@ -52,6 +52,6 @@ public class Bank {
   }
 
   public synchronized void setAccounts(Map<String, Account> accounts) {
-    this.accounts = new ConcurrentHashMap<>(accounts);
+    this.accounts = new HashMap<>(accounts);
   }
 }

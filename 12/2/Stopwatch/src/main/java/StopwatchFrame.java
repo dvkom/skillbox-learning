@@ -1,34 +1,32 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Stopwatch extends JFrame {
+public class StopwatchFrame extends JFrame {
   private JPanel rootPanel;
   private JLabel secondsLabel;
   private JButton startAndStopButton;
-  private JButton pauseButton;
+  private JButton pauseAndResumeButton;
   private boolean isStarted = false;
-  private int millis = 0;
-  private int minutes = 0;
+  private boolean isPaused = false;
   private static final int WIDTH = 400;
   private static final int HEIGHT = 300;
-  private Thread stopwatch;
+  private Thread updater;
+//  private SynchronizedStopwatch stopwatch = new SynchronizedStopwatch();
+  private AtomicStopwatch stopwatch = new AtomicStopwatch();
 
-  public Stopwatch() throws HeadlessException {
+  public StopwatchFrame() throws HeadlessException {
     init();
 
     startAndStopButton.addActionListener(e -> {
       if (!isStarted) {
-        isStarted = true;
-        stopwatch = new Thread(() -> {
+        setState(StopwatchState.STARTED);
+        updater = new Thread(() -> {
           while (true) {
-            millis++;
-            if (millis >= 6_000) {
-              minutes++;
-              millis = 0;
-            }
-            secondsLabel.setText(String.format(
-                "%d:%02d:%02d", minutes, millis / 100 % 100, millis % 100
-            ));
+            long elapsedTime = stopwatch.getElapsedTime();
+            SwingUtilities.invokeLater(() ->
+                secondsLabel.setText(String.format("%d:%02d:%02d",
+                    elapsedTime / 6_000, elapsedTime / 100 % 60, elapsedTime % 100))
+            );
             try {
               Thread.sleep(10);
             } catch (InterruptedException e1) {
@@ -36,26 +34,48 @@ public class Stopwatch extends JFrame {
             }
           }
         });
-        stopwatch.start();
-        startAndStopButton.setText("Stop!");
-        pauseButton.setEnabled(true);
+        updater.start();
       } else {
-        isStarted = false;
-        stopwatch.interrupt();
-        millis = 0;
-        minutes = 0;
-        secondsLabel.setText("0:00:00");
-        startAndStopButton.setText("Start!");
-        pauseButton.setEnabled(false);
+        updater.interrupt();
+        setState(StopwatchState.STOPPED);
       }
     });
 
-    pauseButton.addActionListener(e -> {
-      isStarted = false;
-      stopwatch.interrupt();
-      startAndStopButton.setText("Start!");
-      pauseButton.setEnabled(false);
+    pauseAndResumeButton.addActionListener(e -> {
+      if (!isPaused) {
+        setState(StopwatchState.PAUSED);
+      } else {
+        setState(StopwatchState.RESUMED);
+      }
     });
+  }
+
+  private void setState(StopwatchState state) {
+    switch (state) {
+      case STARTED:
+        isStarted = true;
+        stopwatch.start();
+        startAndStopButton.setText("Stop!");
+        pauseAndResumeButton.setEnabled(true);
+        break;
+      case STOPPED:
+        isStarted = false;
+        isPaused = false;
+        startAndStopButton.setText("Start!");
+        pauseAndResumeButton.setText("Pause");
+        pauseAndResumeButton.setEnabled(false);
+        break;
+      case PAUSED:
+        isPaused = true;
+        stopwatch.pause();
+        pauseAndResumeButton.setText("Resume");
+        break;
+      case RESUMED:
+        isPaused = false;
+        stopwatch.resume();
+        pauseAndResumeButton.setText("Pause");
+        break;
+    }
   }
 
   private void init() {
@@ -101,14 +121,14 @@ public class Stopwatch extends JFrame {
   }
 
   private JButton createPauseButton() {
-    pauseButton = new JButton("Pause!");
-    pauseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    pauseButton.setMinimumSize(new Dimension(WIDTH - 100, 40));
-    pauseButton.setPreferredSize(new Dimension(WIDTH - 100, 40));
-    pauseButton.setMaximumSize(new Dimension(WIDTH - 100, 40));
-    pauseButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
-    pauseButton.setEnabled(false);
-    return pauseButton;
+    pauseAndResumeButton = new JButton("Pause!");
+    pauseAndResumeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    pauseAndResumeButton.setMinimumSize(new Dimension(WIDTH - 100, 40));
+    pauseAndResumeButton.setPreferredSize(new Dimension(WIDTH - 100, 40));
+    pauseAndResumeButton.setMaximumSize(new Dimension(WIDTH - 100, 40));
+    pauseAndResumeButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
+    pauseAndResumeButton.setEnabled(false);
+    return pauseAndResumeButton;
   }
 
   private void createAndPackComponents() {
@@ -119,5 +139,12 @@ public class Stopwatch extends JFrame {
     rootPanel.add(createStartButton());
     rootPanel.add(Box.createVerticalStrut(10));
     rootPanel.add(createPauseButton());
+  }
+
+  private enum StopwatchState {
+    STARTED,
+    STOPPED,
+    PAUSED,
+    RESUMED
   }
 }

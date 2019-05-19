@@ -14,6 +14,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class BankTest {
+  private static final String ACCOUNT_1 = "1";
+  private static final String ACCOUNT_2 = "2";
 
   @Test
   public void concurrent_transfer_will_not_change_accounts_balance() {
@@ -54,10 +56,10 @@ public class BankTest {
   @Test
   public void will_not_be_transferred_between_locked_accounts() {
     Bank bank = createBankWithLockedAccounts();
-    bank.transfer(String.valueOf(1), String.valueOf(2), 60_000L);
-    bank.transfer(String.valueOf(2), String.valueOf(1), 20_000L);
+    bank.transfer(ACCOUNT_1, ACCOUNT_2, 60_000L);
+    bank.transfer(ACCOUNT_2, ACCOUNT_1, 20_000L);
     assertThat(
-        new Long[]{bank.getBalance("1"), bank.getBalance("2")},
+        new Long[]{bank.getBalance(ACCOUNT_1), bank.getBalance(ACCOUNT_2)},
         is(new Long[]{500_000L, 500_000L})
     );
   }
@@ -66,16 +68,16 @@ public class BankTest {
   public void accounts_will_be_locked() {
     Bank bank = new Bank();
     HashMap<String, Account> accounts = new HashMap<>();
-    accounts.put("1", new Account(500_000L));
-    accounts.put("2", new Account(500_000L));
+    accounts.put(ACCOUNT_1, new Account(500_000L));
+    accounts.put(ACCOUNT_2, new Account(500_000L));
     bank.setAccounts(accounts);
 
     ExecutorService executor = Executors.newFixedThreadPool(100);
     for (int i = 0; i < 100; i++) {
       executor.execute(() ->
-          bank.transfer("1", "2", 60_000L));
+          bank.transfer(ACCOUNT_1, ACCOUNT_2, 60_000L));
       executor.execute(() ->
-          bank.transfer("2", "1", 60_000L));
+          bank.transfer(ACCOUNT_2, ACCOUNT_1, 60_000L));
     }
     executor.shutdown();
 
@@ -106,10 +108,10 @@ public class BankTest {
   private Bank createBankWithLockedAccounts() {
     Bank bank = new Bank();
     HashMap<String, Account> accounts = new HashMap<>();
-    accounts.put("1", new Account(500_000L));
-    accounts.put("2", new Account(500_000L));
-    accounts.get("1").setLocked(true);
-    accounts.get("2").setLocked(true);
+    accounts.put(ACCOUNT_1, new Account(500_000L));
+    accounts.put(ACCOUNT_2, new Account(500_000L));
+    accounts.get(ACCOUNT_1).setLocked(true);
+    accounts.get(ACCOUNT_2).setLocked(true);
     bank.setAccounts(accounts);
     return bank;
   }
