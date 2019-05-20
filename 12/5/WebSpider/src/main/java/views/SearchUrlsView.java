@@ -177,8 +177,10 @@ public class SearchUrlsView implements SearchUrlsContract.View {
 
   @Override
   public void showStatistic(String processedUrls, String unprocessedUrls) {
-    processedPagesCountLabel.setText(processedUrls);
-    pagesInQueueCountLabel.setText(unprocessedUrls);
+    SwingUtilities.invokeLater(() -> {
+      processedPagesCountLabel.setText(processedUrls);
+      pagesInQueueCountLabel.setText(unprocessedUrls);
+    });
   }
 
   @Override

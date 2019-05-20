@@ -1,3 +1,5 @@
+import contracts.Model;
+import models.SearchEngineModel;
 import org.apache.log4j.Logger;
 import presenters.Presenter;
 import views.SearchUrlsView;
@@ -11,7 +13,8 @@ public class Loader {
     log.info("The Web Spider was started");
     SwingUtilities.invokeLater(() -> {
       SearchUrlsView form = new SearchUrlsView();
-      Presenter presenter = new Presenter(form);
+      Model model = new SearchEngineModel();
+      Presenter presenter = new Presenter(model, form);
       form.setPresenter(presenter);
     });
   }

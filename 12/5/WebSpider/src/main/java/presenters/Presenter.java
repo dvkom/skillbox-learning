@@ -1,7 +1,7 @@
 package presenters;
 
+import contracts.Model;
 import contracts.SearchUrlsContract;
-import models.SearchEngineModel;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.TimeUnit;
@@ -11,12 +11,12 @@ import java.util.regex.Pattern;
 public class Presenter implements SearchUrlsContract.Presenter {
   private static final Logger log = Logger.getLogger(Presenter.class);
   private Thread updaterThread;
-  private Thread webSpiderThread;
   private SearchUrlsContract.View view;
-  private SearchUrlsContract.Model model;
+  private Model model;
 
-  public Presenter(SearchUrlsContract.View view) {
+  public Presenter(Model model, SearchUrlsContract.View view) {
     this.view = view;
+    this.model = model;
   }
 
   @Override
@@ -31,11 +31,9 @@ public class Presenter implements SearchUrlsContract.Presenter {
 
   @Override
   public void onStartSearch() {
-    model = new SearchEngineModel(view.getStartUrl());
-    webSpiderThread = new Thread(model);
     String pauseCount = view.getPauseValue().replaceAll("[^\\d]", "");
     model.setVisitPause(Long.parseLong(pauseCount));
-    webSpiderThread.start();
+    model.start(view.getStartUrl());
     view.showStartedView();
     view.showProgress();
     createAndStartUpdaterThread();
@@ -43,7 +41,7 @@ public class Presenter implements SearchUrlsContract.Presenter {
 
   @Override
   public void onStopSearch() {
-    webSpiderThread.interrupt();
+    model.stop();
   }
 
   @Override
@@ -69,7 +67,7 @@ public class Presenter implements SearchUrlsContract.Presenter {
         view.showStatistic(processedUrlsCount, unprocessedUrlsCount);
         view.showStopwatch(stopwatchTime);
         try {
-          if (!webSpiderThread.isAlive()) {
+          if (model.isSearchDone()) {
             boolean isSuccess = model.saveResultToFile(view.getPathToSaveResult());
             view.showStoppedView();
             view.hideProgress();

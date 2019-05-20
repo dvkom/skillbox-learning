@@ -29,15 +29,4 @@ public interface SearchUrlsContract {
     void onStopSearch();
     void onPauseSearch();
   }
-
-  interface Model extends Runnable {
-    int getProcessedUrlsCount();
-    int getUnprocessedUrlsCount();
-    String getStopwatchTime();
-    void suspend();
-    void resume();
-    boolean isSuspended();
-    void setVisitPause(long pause);
-    boolean saveResultToFile(Path pathToSaveResult);
-  }
 }
