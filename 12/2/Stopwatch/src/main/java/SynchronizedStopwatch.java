@@ -4,23 +4,23 @@ public class SynchronizedStopwatch {
   private long pausedTime;
   private boolean isPaused;
 
-  public void start() {
+  public synchronized void start() {
     startTime = System.nanoTime();
     pausedTime = 0;
     isPaused = false;
   }
 
-  public void pause() {
+  public synchronized void pause() {
     isPaused = true;
     startPauseTime = System.nanoTime();
   }
 
-  public void resume() {
+  public synchronized void resume() {
     isPaused = false;
     pausedTime += System.nanoTime() - startPauseTime;
   }
 
-  public long getElapsedTime() {
+  public synchronized long getElapsedTime() {
     return isPaused ?
         (startPauseTime - startTime - pausedTime) / 10_000_000 :
         (System.nanoTime() - startTime - pausedTime) / 10_000_000;

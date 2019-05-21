@@ -6,7 +6,7 @@ public class Bank {
   private volatile HashMap<String, Account> accounts;
   private final Random random = new Random();
 
-  public synchronized boolean isFraud()
+  public boolean isFraud()
       throws InterruptedException {
     Thread.sleep(1000);
     return random.nextBoolean();
