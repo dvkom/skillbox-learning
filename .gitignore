@@ -30,3 +30,7 @@ out/
 
 *.jpg
 *.png
+*.xls
+*.xlsx
+*.doc
+*.docx
