@@ -34,3 +34,5 @@ out/
 *.xlsx
 *.doc
 *.docx
+
+res/
