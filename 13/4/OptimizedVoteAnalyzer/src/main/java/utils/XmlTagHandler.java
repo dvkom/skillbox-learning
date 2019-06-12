@@ -7,13 +7,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
-public class Handler extends DefaultHandler {
-  private static final Logger log = Logger.getLogger(Handler.class);
+public class XmlTagHandler extends DefaultHandler {
+  private static final Logger log = Logger.getLogger(XmlTagHandler.class);
   private static SimpleDateFormat visitDateFormat =
       new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 

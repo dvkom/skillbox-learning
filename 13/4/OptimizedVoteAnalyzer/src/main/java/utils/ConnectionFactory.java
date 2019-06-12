@@ -36,8 +36,8 @@ public class ConnectionFactory {
     connection.createStatement().execute("DROP TABLE IF EXISTS voter_count");
     connection.createStatement().execute("CREATE TABLE voter_count(" +
         "id INT NOT NULL AUTO_INCREMENT, " +
-        "name TINYTEXT NOT NULL, " +
-        "birthDate DATE NOT NULL, " +
+        "name VARCHAR(50), " +
+        "birthDate VARCHAR(50), " +
         "PRIMARY KEY(id))");
   }
 }

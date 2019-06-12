@@ -1,6 +1,6 @@
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
-import utils.Handler;
+import utils.XmlTagHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -20,7 +20,7 @@ public class VoteAnalyzer {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     try {
       SAXParser parser = factory.newSAXParser();
-      Handler handler = new Handler();
+      XmlTagHandler handler = new XmlTagHandler();
       parser.parse(new File(fileName), handler);
       handler.printResults();
     } catch (ParserConfigurationException | IOException | SAXException e) {
