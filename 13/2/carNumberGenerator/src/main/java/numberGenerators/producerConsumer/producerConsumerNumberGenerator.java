@@ -1,29 +1,44 @@
-package numberGenerators.notVeryOptimized;
+package numberGenerators.producerConsumer;
 
 import numberGenerators.Generatable;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 
-public class NotVeryOptimizedNumberGenerator implements Generatable {
+public class producerConsumerNumberGenerator implements Generatable {
   private static final char[] LETTERS =
       {'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
   private static final int MAX_NUMBER_VALUE = 1000;
   private static final int MAX_REGION_CODE = 50;
   private static final int BUFFER_SIZE = 10_000;
   private static final String PATH_TO_SAVE = "src/main/res/numbers_notVeryOptimized.txt";
+  public static final int THREAD_COUNTS = 4;
+  public static final int QUEUE_SIZE = 2000;
   private BlockingQueue<String> numbersQueue;
 
   @Override
   public void generate() {
-    numbersQueue = new ArrayBlockingQueue<>(200);
-    Thread producerThread = new Thread(new Producer(1, MAX_NUMBER_VALUE));
-    producerThread.start();
+    numbersQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
+    ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNTS);
+    for (int i = 0; i < THREAD_COUNTS; i++) {
+      executor.submit(new Producer(i * MAX_NUMBER_VALUE / THREAD_COUNTS + 1,
+          MAX_NUMBER_VALUE / THREAD_COUNTS));
+    }
+    executor.shutdown();
 
     Thread consumerThread = new Thread(new Consumer());
     consumerThread.start();
     try {
+      try {
+        if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+          executor.shutdownNow();
+        }
+      } catch (InterruptedException ex) {
+        executor.shutdownNow();
+      }
+      consumerThread.interrupt();
       consumerThread.join();
     } catch (InterruptedException e) {
       e.printStackTrace();
@@ -52,8 +67,9 @@ public class NotVeryOptimizedNumberGenerator implements Generatable {
                   try {
                     numbersQueue.put(carNumbers.toString());
                   } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     e.printStackTrace();
-                    break;
+                    return;
                   }
                   carNumbers = new StringBuilder();
                 }
@@ -78,7 +94,6 @@ public class NotVeryOptimizedNumberGenerator implements Generatable {
       }
       try {
         numbersQueue.put(carNumbers.toString());
-        numbersQueue.put("end");
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
@@ -91,16 +106,31 @@ public class NotVeryOptimizedNumberGenerator implements Generatable {
     @Override
     public void run() {
       System.out.println("Consumer started");
-      try (PrintWriter writer = new PrintWriter(PATH_TO_SAVE)) {
-        while (true) {
-          String number = numbersQueue.take();
-          if (number.equals("end")) {
-            break;
+      try (FileOutputStream s = new FileOutputStream(PATH_TO_SAVE)) {
+        while (!Thread.interrupted()) {
+          ArrayList<String> objects = new ArrayList<>();
+          numbersQueue.drainTo(objects);
+
+          long charsSent = 0;
+          long start = System.nanoTime();
+          for (String object : objects) {
+            s.write(object.getBytes());
+            charsSent += object.length();
           }
-          writer.write(number);
+          s.flush();
+          System.out.printf("took %d objects (%.2f MB/s)%n", objects.size(),
+              charsSent / 1024 / 1024.0 / ((System.nanoTime() - start) / 1_000_000_000.0));
         }
+
+        ArrayList<String> objects = new ArrayList<>();
+        numbersQueue.drainTo(objects);
+        System.out.println("Almost done " + objects.size());
+        for (String object : objects) {
+          s.write(object.getBytes());
+        }
+
         System.out.println("Consumer done");
-      } catch (FileNotFoundException | InterruptedException e) {
+      } catch (IOException e) {
         e.printStackTrace();
       }
     }

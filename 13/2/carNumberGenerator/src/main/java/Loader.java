@@ -1,7 +1,6 @@
 import numberGenerators.Generatable;
-import numberGenerators.notVeryOptimized.NotVeryOptimizedNumberGenerator;
-import numberGenerators.optimized.OptimizedNumberGenerator;
 import numberGenerators.original.OriginalNumberGenerator;
+import numberGenerators.producerConsumer.producerConsumerNumberGenerator;
 
 public class Loader {
   static volatile long start;
@@ -18,7 +17,7 @@ public class Loader {
 //    System.out.println("Optimized finished " + (System.nanoTime() - start)/1_000_000 + " ms");
 //
 //    start = System.nanoTime();
-//    Generatable notVeryOptimized = new NotVeryOptimizedNumberGenerator();
+//    Generatable notVeryOptimized = new producerConsumerNumberGenerator();
 //    notVeryOptimized.generate();
 //    System.out.println("notVeryOptimized finished " + (System.nanoTime() - start)/1_000_000 + " ms");
   }
