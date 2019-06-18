@@ -7,26 +7,40 @@
   <groupId>com</groupId>
   <artifactId>WebVoteAnalyzer</artifactId>
   <version>1.0</version>
+  <properties>
+    <jetty-server.version>9.4.19.v20190610</jetty-server.version>
+    <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
+    <log4j.version>1.2.17</log4j.version>
+    <javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+  </properties>
+  <packaging>war</packaging>
 
   <dependencies>
     <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
+      <version>${javax.servlet-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <version>${log4j.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>javax.servlet.jsp-api</artifactId>
-      <version>2.3.3</version>
+      <version>${javax.servlet.jsp-api.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${jetty-server.version}</version>
     </dependency>
   </dependencies>
 
@@ -35,11 +49,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <release>11</release>
         </configuration>
       </plugin>
+      <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty-server.version}</version>
+      </plugin>
+
     </plugins>
   </build>
   <name>WebVoteAnalyzer</name>
