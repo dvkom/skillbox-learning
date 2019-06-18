@@ -2,6 +2,7 @@ package controller;
 
 import model.VoteAnalyzer;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -15,12 +16,13 @@ import java.io.InputStream;
 @WebServlet("/parse")
 @MultipartConfig
 public class ParseController extends HttpServlet {
-  private VoteAnalyzer analyzer = new VoteAnalyzer();
 
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
+    @Inject
+    private VoteAnalyzer analyzer;
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
     Part filePart = req.getPart("file");
     InputStream filePartInputStream = filePart.getInputStream();
     if (filePartInputStream.available() != 0) {
@@ -29,5 +31,5 @@ public class ParseController extends HttpServlet {
       req.setAttribute("workDays", analyzer.getWorkDays());
     }
     req.getRequestDispatcher("view/result.jsp").forward(req, resp);
-  }
+    }
 }
