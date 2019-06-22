@@ -7,15 +7,16 @@ public class VoteStationSchedule {
   private Set<String> workDays = new TreeSet<>();
   private List<List<String>> schedule = new ArrayList<>();
 
-  public void buildSchedule(HashMap<Integer, WorkTime> voteStationWorkTimes) {
-    voteStationWorkTimes.forEach((key, value) -> workDays
-        .addAll(
-            value.getPeriods()
-                .stream()
-                .map(TimePeriod::getDate)
-                .collect(Collectors.toSet())
-        )
-    );
+  private VoteStationSchedule() {
+  }
+
+  public static VoteStationSchedule buildSchedule(HashMap<Integer, WorkTime> voteStationWorkTimes) {
+    VoteStationSchedule voteStationSchedule = new VoteStationSchedule();
+    voteStationSchedule.workDays = voteStationWorkTimes.values()
+        .stream()
+        .flatMap(v -> v.getPeriods().stream())
+        .map(TimePeriod::getDate)
+        .collect(Collectors.toSet());
 
     Map<Integer, Map<String, String>> workSchedule = voteStationWorkTimes.entrySet().stream()
         .collect(Collectors.toMap(
@@ -32,11 +33,16 @@ public class VoteStationSchedule {
     for (Map.Entry<Integer, Map<String, String>> stationWorkTimes : workSchedule.entrySet()) {
       List<String> workTimes = new ArrayList<>();
       workTimes.add(stationWorkTimes.getKey().toString());
-      for (String day : workDays) {
+      for (String day : voteStationSchedule.workDays) {
         workTimes.add(stationWorkTimes.getValue().getOrDefault(day, "-"));
       }
-      schedule.add(workTimes);
+      voteStationSchedule.schedule.add(workTimes);
     }
+    return voteStationSchedule;
+  }
+
+  public static VoteStationSchedule emptySchedule() {
+    return new VoteStationSchedule();
   }
 
   public List<List<String>> getSchedule() {

@@ -20,18 +20,16 @@ public class VoteAnalyzerImpl implements VoteAnalyzer {
   @Override
   public VoteStationSchedule analyze(InputStream inputStreamToParse) {
     SAXParserFactory factory = SAXParserFactory.newInstance();
-    VoteStationSchedule voteStationSchedule = new VoteStationSchedule();
     try {
       SAXParser parser = factory.newSAXParser();
       XmlTagHandler handler = new XmlTagHandler();
       parser.parse(inputStreamToParse, handler);
       HashMap<Integer, WorkTime> voteStationWorkTimes = handler.getVoteStationWorkTimes();
 
-      voteStationSchedule.buildSchedule(voteStationWorkTimes);
+      return VoteStationSchedule.buildSchedule(voteStationWorkTimes);
     } catch (ParserConfigurationException | IOException | SAXException e) {
       log.error(e);
+      return VoteStationSchedule.emptySchedule();
     }
-
-    return voteStationSchedule;
   }
 }
