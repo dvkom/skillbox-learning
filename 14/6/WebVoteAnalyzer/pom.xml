@@ -8,18 +8,16 @@
   <artifactId>WebVoteAnalyzer</artifactId>
   <version>1.0</version>
   <properties>
-    <jetty-server.version>9.4.19.v20190610</jetty-server.version>
     <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     <log4j.version>1.2.17</log4j.version>
     <javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <weld-servlet.version>3.1.1.Final</weld-servlet.version>
-    <tomcat.version>8.5.23</tomcat.version>
+    <tomcat.version>9.0.21</tomcat.version>
   </properties>
   <packaging>war</packaging>
 
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -31,30 +29,16 @@
       <artifactId>log4j</artifactId>
       <version>${log4j.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api -->
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>javax.servlet.jsp-api</artifactId>
       <version>${javax.servlet.jsp-api.version}</version>
       <scope>provided</scope>
     </dependency>
-<!--    &lt;!&ndash; https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.eclipse.jetty</groupId>-->
-<!--      <artifactId>jetty-server</artifactId>-->
-<!--      <version>${jetty-server.version}</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-shaded</artifactId>
       <version>${weld-servlet.version}</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-core</artifactId>
-      <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat.embed</groupId>
@@ -62,21 +46,15 @@
       <version>${tomcat.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-jasper</artifactId>
-      <version>${tomcat.version}</version>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-spec</artifactId>
+      <version>1.2.5</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-jasper-el</artifactId>
-      <version>${tomcat.version}</version>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-impl</artifactId>
+      <version>1.2.5</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>tomcat-jsp-api</artifactId>
-      <version>${tomcat.version}</version>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -89,16 +67,6 @@
           <release>11</release>
         </configuration>
       </plugin>
-      <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
-      <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>${jetty-server.version}</version>
-        <configuration>
-          <contextXml>src/main/webapp/WEB-INF/jetty-web.xml</contextXml>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
   <name>WebVoteAnalyzer</name>

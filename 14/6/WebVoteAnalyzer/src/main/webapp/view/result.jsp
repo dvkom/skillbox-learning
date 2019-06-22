@@ -1,6 +1,5 @@
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.TreeSet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
   <title>WebVoteAnalyzer: результаты анализа</title>
@@ -35,33 +34,29 @@
   <h1>Расписание работы участков:</h1>
 </div>
 <table class="w3-table w3-striped w3-border">
-  <%
-    TreeSet<String> workDays = (TreeSet<String>) request.getAttribute("workDays");
-    if (workDays != null) {
-    out.println("<tr class=\"w3-blue\">");
-    out.println("<td>Участок</td>");
-    for (String s : workDays) {
-      out.println("<td>" + s + "</td>");
-    }
-    out.println("</tr>");
-    Map<Integer, Map<String, String>> voteStationsSchedule =
-        (Map<Integer, Map<String, String>>) request.getAttribute("voteStationsSchedule");
-    if (voteStationsSchedule != null) {
-      for (Map.Entry<Integer, Map<String, String>> entry : voteStationsSchedule.entrySet()) {
-        out.println("<tr>");
-        out.println("<td>" + entry.getKey() + "</td>");
-        for (String day : workDays) {
-          if (entry.getValue().containsKey(day)) {
-            out.println("<td>" + entry.getValue().get(day) + "</td>");
-          } else {
-            out.println("<td> - </td>");
-          }
-        }
-      }
-    }
-      out.println("</tr>");
-    }
-  %>
+  <c:set var="voteStationsSchedule" scope="session" value='${requestScope["voteStationsSchedule"]}'/>
+  <c:set var="workDays" scope="session" value='${voteStationsSchedule.workDays}'/>
+  <c:set var="schedule" scope="session" value='${voteStationsSchedule.schedule}'/>
+
+  <c:if test="${workDays != null}">
+    <tr class=\"w3-blue\">
+      <td>Участок</td>
+      <c:forEach items="${workDays}" var="workDay">
+        <td><c:out value="${workDay}"/></td>
+      </c:forEach>
+    </tr>
+  </c:if>
+
+  <c:if test="${schedule != null}">
+    <c:forEach items="${schedule}" var="stationSchedule">
+      <tr>
+        <c:forEach items="${stationSchedule}" var="timePeriod">
+          <td><c:out value="${timePeriod}"/></td>
+        </c:forEach>
+      </tr>
+    </c:forEach>
+  </c:if>
+
 </table>
 <br>
 <button onclick="topFunction()" id="toTopButton">Наверх</button>

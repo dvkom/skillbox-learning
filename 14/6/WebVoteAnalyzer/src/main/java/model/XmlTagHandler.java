@@ -41,12 +41,4 @@ class XmlTagHandler extends DefaultHandler {
   public HashMap<Integer, WorkTime> getVoteStationWorkTimes() {
     return voteStationWorkTimes;
   }
-
-  public void printResults() {
-    System.out.println("Voting station work times: ");
-    for (Integer votingStation : voteStationWorkTimes.keySet()) {
-      WorkTime workTime = voteStationWorkTimes.get(votingStation);
-      System.out.println("\t" + votingStation + " - " + workTime);
-    }
-  }
 }
