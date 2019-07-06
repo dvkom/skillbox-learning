@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Browsers Statistic</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+
+    function createList(data) {
+      if (data.toString() !== "") {
+        var table = document.getElementById('renderTable');
+
+        Object.keys(data).forEach(function (key) {
+          console.log(key + " " + data[key]);
+          var tr = document.createElement('tr');
+          var browser = document.createElement('td');
+          browser.innerHTML = key;
+          var count = document.createElement('td');
+          count.innerHTML = data[key];
+          tr.appendChild(browser);
+          tr.appendChild(count);
+          table.appendChild(tr);
+        });
+      }
+    }
+
+    window.onload = function () {
+      $.get("/statistic", function (data) {
+        createList(data);
+      });
+    };
+  </script>
+</head>
+<body class="w3-light-grey">
+<div class="w3-container w3-center w3-margin-bottom w3-padding">
+  <div class="w3-container w3-teal">
+    <h1>Статистика посещаемости данной страницы:</h1>
+  </div>
+
+  <table id="renderTable" class="w3-table-all">
+    <tr class="w3-blue">
+      <th>Browser</th>
+      <th>Count</th>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

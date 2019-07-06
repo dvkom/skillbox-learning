@@ -1,0 +1,191 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "com.creditApp.creditRequestSchema.json",
+  "type": "object",
+  "required": [
+    "creditSum",
+    "creditTerm",
+    "lastName",
+    "firstName",
+    "birthday",
+    "email",
+    "phone",
+    "gender",
+    "passportSeries",
+    "passportNumber",
+    "passportDateOfIssue",
+    "passportCode",
+    "city",
+    "street",
+    "address",
+    "flat",
+    "isPrivacyAccepted"
+  ],
+  "additionalItems": false,
+  "properties": {
+    "isSalaryProject": {
+      "$id": "#/properties/isSalaryProject",
+      "type": "boolean",
+      "default": false
+    },
+    "isTrustedClient": {
+      "$id": "#/properties/isTrustedClient",
+      "type": "boolean",
+      "default": false
+    },
+    "isRetiree": {
+      "$id": "#/properties/isRetiree",
+      "type": "boolean",
+      "default": false
+    },
+    "creditSum": {
+      "$id": "#/properties/creditSum",
+      "type": "integer",
+      "minimum": 50000,
+      "maximum": 5000000,
+      "multipleOf" : 50000,
+      "examples": [
+        1500000
+      ]
+    },
+    "creditTerm": {
+      "$id": "#/properties/creditTerm",
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 360,
+      "multipleOf" : 6,
+      "examples": [
+        12
+      ]
+    },
+    "lastName": {
+      "$id": "#/properties/lastName",
+      "type": "string",
+      "examples": [
+        "Kombarov"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё]{1,50}"
+    },
+    "firstName": {
+      "$id": "#/properties/firstName",
+      "type": "string",
+      "examples": [
+        "Denis"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё]{1,50}"
+    },
+    "middleName": {
+      "$id": "#/properties/middleName",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Vladimirovich"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё]{1,50}"
+    },
+    "birthday": {
+      "$id": "#/properties/birthday",
+      "type": "string",
+      "examples": [
+        "1991-07-10"
+      ],
+      "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    },
+    "email": {
+      "$id": "#/properties/email",
+      "type": "string",
+      "examples": [
+        "examle@example.com"
+      ],
+      "pattern": "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$"
+    },
+    "phone": {
+      "$id": "#/properties/phone",
+      "type": "string",
+      "examples": [
+        "+79639466693"
+      ],
+      "pattern": "^((\\+7|7|8)+([0-9]){10})$"
+    },
+    "gender": {
+      "$id": "#/properties/gender",
+      "type": "string",
+      "examples": [
+        "male"
+      ],
+      "pattern": "male|female"
+    },
+    "passportSeries": {
+      "$id": "#/properties/passportSeries",
+      "type": "string",
+      "examples": [
+        "1234"
+      ],
+      "pattern": "[0-9]{4}"
+    },
+    "passportNumber": {
+      "$id": "#/properties/passportNumber",
+      "type": "string",
+      "examples": [
+        "123456"
+      ],
+      "pattern": "[0-9]{6}"
+    },
+    "passportDateOfIssue": {
+      "$id": "#/properties/passportDateOfIssue",
+      "type": "string",
+      "examples": [
+        "2019-07-11"
+      ],
+      "pattern": "[0-9]{4}-[0-9]{2}-[0-9]{2}"
+    },
+    "passportCode": {
+      "$id": "#/properties/passportCode",
+      "type": "string",
+      "examples": [
+        "123"
+      ],
+      "pattern": "[0-9]{3}"
+    },
+    "city": {
+      "$id": "#/properties/city",
+      "type": "string",
+      "examples": [
+        "London"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё0-9]{3,50}"
+    },
+    "street": {
+      "$id": "#/properties/street",
+      "type": "string",
+      "examples": [
+        "Baker Street"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё0-9.,\\s]{3,50}"
+    },
+    "address": {
+      "$id": "#/properties/address",
+      "type": "string",
+      "examples": [
+        "13"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё0-9.,\\s]{1,8}"
+    },
+    "flat": {
+      "$id": "#/properties/flat",
+      "type": "string",
+      "examples": [
+        "14"
+      ],
+      "pattern": "[A-Za-zА-Яа-яЁё0-9.,\\s]{1,8}"
+    },
+    "isPrivacyAccepted": {
+      "$id": "#/properties/isPrivacyAccepted",
+      "type": "boolean",
+      "examples": [
+        true
+      ]
+    }
+  }
+}
