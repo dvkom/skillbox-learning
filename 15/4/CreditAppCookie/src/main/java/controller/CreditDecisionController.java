@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import entity.CreditRequest;
+import entity.CreditRequestView;
 import model.DecisionEngine;
 import model.SingleObjectStorage;
 import org.apache.log4j.Logger;
+import utils.CreditRequestMapper;
 import utils.CreditRequestValidator;
 
 import javax.inject.Inject;
@@ -42,9 +44,12 @@ public class CreditDecisionController extends HttpServlet {
       if (jsonString != null && CreditRequestValidator.isValid(jsonString, PATH_TO_SCHEMA)) {
         log.info("JSON is valid: " + jsonString);
         ObjectMapper objectMapper = new ObjectMapper();
-        CreditRequest creditRequest = objectMapper.readValue(jsonString, CreditRequest.class);
+        CreditRequestView creditRequestView =
+            objectMapper.readValue(jsonString, CreditRequestView.class);
+        log.debug("Deserialized object: " + creditRequestView);
+        CreditRequest creditRequest = CreditRequestMapper.INSTANCE.getRequest(creditRequestView);
         storage.save(creditRequest);
-        log.info("Deserialized object: " + creditRequest);
+        log.debug("After mapping object: " + creditRequest);
       }
 
     } catch (IOException e) {
@@ -59,7 +64,8 @@ public class CreditDecisionController extends HttpServlet {
     CreditRequest creditRequest = storage.get();
     if (creditRequest != null) {
       ObjectMapper objectMapper = new ObjectMapper();
-      JsonNode jsonResponse = objectMapper.valueToTree(creditRequest);
+      CreditRequestView creditRequestView = CreditRequestMapper.INSTANCE.getView(creditRequest);
+      JsonNode jsonResponse = objectMapper.valueToTree(creditRequestView);
 
       boolean creditDecision = decisionEngine.decide(creditRequest);
       ((ObjectNode) jsonResponse).put("creditDecision", creditDecision);

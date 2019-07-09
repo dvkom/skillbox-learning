@@ -10,12 +10,12 @@
   <script>
     // When the user clicks on div, open the popup
     function showPopup() {
-      var popup = document.getElementById("privacyAgreementPopup");
+      const popup = document.getElementById("privacyAgreementPopup");
       popup.classList.toggle("show");
     }
 
     function submitForm() {
-      var keyValuePairs = {};
+      let keyValuePairs = {};
       $("#requestForm")
         .serializeArray()
         .forEach(function (element) {
@@ -40,17 +40,19 @@
     }
 
     function sendCreditRequest(keyValuePairs) {
-      keyValuePairs["isSalaryProject"] = (keyValuePairs["isSalaryProject"] === "true");
-      keyValuePairs["isTrustedClient"] = (keyValuePairs["isTrustedClient"] === "true");
-      keyValuePairs["isRetiree"] = (keyValuePairs["isRetiree"] === "true");
-      keyValuePairs["creditSum"] = parseInt(keyValuePairs["creditSum"], 10);
-      keyValuePairs["creditTerm"] = parseInt(keyValuePairs["creditTerm"], 10);
-      keyValuePairs["isPrivacyAccepted"] = (keyValuePairs["isPrivacyAccepted"] === "true");
+
+      const copyOfKeyValuePairs = jQuery.extend(true, {}, keyValuePairs);
+      copyOfKeyValuePairs["isSalaryProject"] = (copyOfKeyValuePairs["isSalaryProject"] === "true");
+      copyOfKeyValuePairs["isTrustedClient"] = (copyOfKeyValuePairs["isTrustedClient"] === "true");
+      copyOfKeyValuePairs["isRetiree"] = (copyOfKeyValuePairs["isRetiree"] === "true");
+      copyOfKeyValuePairs["creditSum"] = parseInt(copyOfKeyValuePairs["creditSum"], 10);
+      copyOfKeyValuePairs["creditTerm"] = parseInt(copyOfKeyValuePairs["creditTerm"], 10);
+      copyOfKeyValuePairs["isPrivacyAccepted"] = (copyOfKeyValuePairs["isPrivacyAccepted"] === "true");
 
       $.ajax({
         type: "POST",
         url: "/decision",
-        data: JSON.stringify(keyValuePairs),
+        data: JSON.stringify(copyOfKeyValuePairs),
         contentType: "application/json; charset=utf-8",
         dataType: "text",
         success: function () {
@@ -66,8 +68,8 @@
       $.get("/saveData", function (data) {
         if (data != null && data.toString() !== "") {
           $.each(data, function(name, val){
-            var $el = $('[name="'+name+'"]'),
-              type = $el.attr('type');
+            const $el = $('[name="' + name + '"]'),
+                type = $el.attr('type');
 
             switch(type){
               case 'checkbox':

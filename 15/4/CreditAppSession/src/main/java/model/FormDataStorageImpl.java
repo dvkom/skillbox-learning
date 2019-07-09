@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ManagedBean
 public class FormDataStorageImpl implements FormDataStorage {
-  private volatile ConcurrentHashMap<String, String> formDataStorage = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, String> formDataStorage = new ConcurrentHashMap<>();
 
   @Override
   public void put(String key, String value) {

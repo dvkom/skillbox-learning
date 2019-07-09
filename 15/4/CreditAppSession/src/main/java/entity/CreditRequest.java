@@ -1,15 +1,7 @@
 package entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-
 import java.time.LocalDate;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditRequest {
 
   private boolean isSalaryProject;
@@ -28,9 +20,6 @@ public class CreditRequest {
 
   private String middleName;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate birthday;
 
   private String email;
@@ -43,9 +32,6 @@ public class CreditRequest {
 
   private String passportNumber;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  @JsonDeserialize(using = LocalDateDeserializer.class)
-  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate passportDateOfIssue;
 
   private String passportCode;

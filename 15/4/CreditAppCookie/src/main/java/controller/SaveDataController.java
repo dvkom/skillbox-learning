@@ -45,12 +45,13 @@ public class SaveDataController extends HttpServlet {
     String userId = getUserIdFromCookie(req);
     if (userId != null) {
 
-      if (formDataStorage.containsKey(userId)) {
+      String formData = formDataStorage.get(userId);
+      if (formData != null) {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         try {
-          resp.getWriter().write(formDataStorage.get(userId));
+          resp.getWriter().write(formData);
         } catch (IOException e) {
           log.error(e);
           resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

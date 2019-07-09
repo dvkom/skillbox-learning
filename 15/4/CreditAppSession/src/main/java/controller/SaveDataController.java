@@ -38,12 +38,13 @@ public class SaveDataController extends HttpServlet {
 
     String sessionId = req.getSession().getId();
 
-    if (formDataStorage.containsKey(sessionId)) {
+    String formData = formDataStorage.get(sessionId);
+    if (formData != null) {
       resp.setContentType("application/json");
       resp.setCharacterEncoding("UTF-8");
 
       try {
-        resp.getWriter().write(formDataStorage.get(sessionId));
+        resp.getWriter().write(formData);
       } catch (IOException e) {
         log.error(e);
         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

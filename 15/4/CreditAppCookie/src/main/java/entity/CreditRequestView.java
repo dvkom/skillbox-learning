@@ -1,8 +1,16 @@
 package entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 import java.time.LocalDate;
 
-public class CreditRequest {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CreditRequestView {
 
   private boolean isSalaryProject;
 
@@ -20,6 +28,9 @@ public class CreditRequest {
 
   private String middleName;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate birthday;
 
   private String email;
@@ -32,6 +43,9 @@ public class CreditRequest {
 
   private String passportNumber;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+  @JsonDeserialize(using = LocalDateDeserializer.class)
+  @JsonSerialize(using = LocalDateSerializer.class)
   private LocalDate passportDateOfIssue;
 
   private String passportCode;
@@ -50,24 +64,24 @@ public class CreditRequest {
     return isSalaryProject;
   }
 
-  public void setIsSalaryProject(boolean salaryProject) {
-    isSalaryProject = salaryProject;
+  public void setIsSalaryProject(boolean isSalaryProject) {
+    this.isSalaryProject = isSalaryProject;
   }
 
   public boolean getIsTrustedClient() {
     return isTrustedClient;
   }
 
-  public void setIsTrustedClient(boolean trustedClient) {
-    isTrustedClient = trustedClient;
+  public void setIsTrustedClient(boolean isTrustedClient) {
+    this.isTrustedClient = isTrustedClient;
   }
 
   public boolean getIsRetiree() {
     return isRetiree;
   }
 
-  public void setIsRetiree(boolean retiree) {
-    isRetiree = retiree;
+  public void setIsRetiree(boolean isRetiree) {
+    this.isRetiree = isRetiree;
   }
 
   public int getCreditSum() {
