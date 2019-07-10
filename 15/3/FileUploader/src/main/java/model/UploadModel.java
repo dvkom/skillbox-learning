@@ -1,14 +1,13 @@
 package model;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 public interface UploadModel {
-  void writeFile(Part filePart, String pathToUpload) throws IOException;
-  boolean contains(Path pathToFile);
-  void loadFile(Path pathToFile, HttpServletResponse response) throws IOException;
-  List<Path> getAllPaths();
+  void writeFile(String fileName, InputStream inputStream) throws IOException;
+  boolean contains(String fileName);
+  void loadFile(String fileName, OutputStream outputStream) throws IOException;
+  List<String> getAllFileNames();
 }

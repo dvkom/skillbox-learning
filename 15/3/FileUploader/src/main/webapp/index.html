@@ -20,8 +20,8 @@
         success: function (data) {
           createList(data);
         },
-        failure: function (errMsg) {
-          alert(errMsg);
+        error: function (xhr) {
+          alert("Error: " + xhr.status);
         }
       });
     }
@@ -49,8 +49,11 @@
     }
 
     window.onload = function() {
-      $.get("/upload", function (data) {
+      $.get("/upload", function(data) {
+      }).done(function(data) {
         createList(data);
+      }).fail(function(xhr) {
+        alert("Error: " + xhr.status);
       });
     };
   </script>
@@ -61,17 +64,13 @@
     <h1>Добро пожаловать в FileUploader</h1>
   </div>
   <div class="w3-panel w3-blue-grey w3-card-4">
-    <h3>Чтобы начать загрузу выберите файл и задайте путь для сохранения</h3>
+    <h3>Чтобы начать загрузу выберите файл и нажмите кнопку "Загрузить"</h3>
   </div>
   <form name="uploadForm" action="javascript:submitForm()" method="post" enctype="multipart/form-data">
     <label class="custom-file-upload w3-light-blue">
       <input type="file" name="file" class="w3-teal" required>
       Выбрать файл
     </label>
-    <br/>
-    <label class="w3-text-blue"><b>Каталог для сохранения:</b></label>
-    <input type="text" name="path" class="w3-input w3-border" style="width: 400px; margin: auto"
-           placeholder="D:\MyDocuments\" required>
     <br/>
     <button class="w3-button w3-teal" style="width: 400px;" type="submit">Загрузить</button>
   </form>
