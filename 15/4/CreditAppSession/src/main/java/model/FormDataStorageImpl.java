@@ -13,11 +13,6 @@ public class FormDataStorageImpl implements FormDataStorage {
   }
 
   @Override
-  public boolean containsKey(String key) {
-    return formDataStorage.containsKey(key);
-  }
-
-  @Override
   public String get(String key) {
     return formDataStorage.get(key);
   }

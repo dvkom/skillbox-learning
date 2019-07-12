@@ -17,26 +17,12 @@
     function submitForm() {
       let keyValuePairs = {};
       $("#requestForm")
-        .serializeArray()
-        .forEach(function (element) {
-          keyValuePairs[element.name] = element.value;
-        });
+          .serializeArray()
+          .forEach(function (element) {
+            keyValuePairs[element.name] = element.value;
+          });
 
-      saveFormData(keyValuePairs);
       sendCreditRequest(keyValuePairs);
-    }
-
-    function saveFormData(keyValuePairs) {
-      $.ajax({
-        type: "POST",
-        url: "/saveData",
-        data: JSON.stringify(keyValuePairs),
-        contentType: "application/json; charset=utf-8",
-        dataType: "text",
-        failure: function (errMsg) {
-          alert(errMsg);
-        }
-      });
     }
 
     function sendCreditRequest(keyValuePairs) {
@@ -52,12 +38,9 @@
       $.ajax({
         type: "POST",
         url: "/decision",
-        data: JSON.stringify(copyOfKeyValuePairs),
+        data: JSON.stringify(copyOfKeyValuePairs) + "\n" + JSON.stringify(keyValuePairs),
         contentType: "application/json; charset=utf-8",
         dataType: "text",
-        success: function () {
-          window.location.href = "/decision";
-        },
         failure: function (errMsg) {
           alert(errMsg);
         }
@@ -65,7 +48,7 @@
     }
 
     window.onload = function() {
-      $.get("/saveData", function (data) {
+      $.get("/decision", {action: "getData"}, function (data) {
         if (data != null && data.toString() !== "") {
           $.each(data, function(name, val){
             const $el = $('[name="' + name + '"]'),
@@ -369,6 +352,12 @@
       </span>
     </div>
   </div>
+  <div class="w3-row w3-section w3-half">
+  </div>
+  <button id="toDecision" class="w3-button w3-block  w3-green w3-ripple w3-padding send-button" type="button"
+          onclick="window.location.href = '/decision?action=getDecision'">
+    Посмотреть результат
+  </button>
 </form>
 
 </body>
