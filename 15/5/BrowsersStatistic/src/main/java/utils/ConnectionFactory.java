@@ -8,16 +8,16 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
   private static final Logger log = Logger.getLogger(ConnectionFactory.class);
-  private static Connection connection;
-  private static String dbName = "learn";
-  private static String dbUser = "root";
-  private static String dbPass = "mmm333";
+  private static volatile Connection connection;
+  private static final String DB_NAME = "learn";
+  private static final String DB_USER = "root";
+  private static final String DB_PASS = "mmm333";
 
   public static Connection getConnection() {
     if (connection == null) {
       try {
-        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + dbName +
-            "?useSSL=false" + "&user=" + dbUser + "&password=" + dbPass +
+        connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + DB_NAME +
+            "?useSSL=false" + "&user=" + DB_USER + "&password=" + DB_PASS +
             "&rewriteBatchedStatements=true");
         createTable();
       } catch (SQLException e) {

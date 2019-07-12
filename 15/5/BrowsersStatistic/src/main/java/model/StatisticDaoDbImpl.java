@@ -4,14 +4,14 @@ import org.apache.log4j.Logger;
 import utils.ConnectionFactory;
 
 import javax.annotation.ManagedBean;
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Alternative;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 @ManagedBean
-@Default
+@Alternative
 public class StatisticDaoDbImpl implements StatisticDao {
   private static final Logger log = Logger.getLogger(StatisticDaoDbImpl.class);
 

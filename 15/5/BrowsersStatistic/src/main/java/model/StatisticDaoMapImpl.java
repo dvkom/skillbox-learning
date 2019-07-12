@@ -1,23 +1,18 @@
 package model;
 
 import javax.annotation.ManagedBean;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Default;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ManagedBean
-@Alternative
+@Default
 public class StatisticDaoMapImpl implements StatisticDao{
-  private ConcurrentHashMap<String, Integer> storage = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<String, Integer> storage = new ConcurrentHashMap<>();
 
   @Override
   public void add(String browserInfo) {
-    if (storage.containsKey(browserInfo)) {
-      int currentCount = storage.get(browserInfo);
-      storage.put(browserInfo, currentCount + 1);
-    } else {
-      storage.put(browserInfo, 1);
-    }
+    storage.merge(browserInfo, 1, Integer::sum);
   }
 
   @Override

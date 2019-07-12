@@ -11,7 +11,7 @@ import java.util.Map;
 public class StatisticModelImpl implements StatisticModel {
 
   @Inject
-  StatisticDao statisticDao;
+  private volatile StatisticDao statisticDao;
 
   @Override
   public void addStatistic(HttpServletRequest req) {

@@ -19,7 +19,7 @@ public class StatisticController extends HttpServlet {
   private static final Logger log = Logger.getLogger(StatisticController.class);
 
   @Inject
-  private StatisticModel statisticModel;
+  private volatile StatisticModel statisticModel;
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
