@@ -56,7 +56,7 @@ public class UploadController extends HttpServlet {
         uploadModel.loadFile(fileName, outputStream);
       } catch (IOException e) {
         log.error(e);
-        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       }
     } else {
       try {
