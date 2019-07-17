@@ -8,7 +8,6 @@ import entity.CreditRequest;
 import entity.CreditRequestView;
 import model.DecisionEngine;
 import model.CreditDecisionStorage;
-import model.FormDataStorage;
 import org.apache.log4j.Logger;
 import utils.CreditRequestMapper;
 import utils.CreditRequestValidator;
@@ -28,10 +27,6 @@ public class CreditDecisionController extends HttpServlet {
 
   private static final String PATH_TO_SCHEMA = "/creditRequestSchema.json";
 
-  private static final String GET_DATA = "getData";
-
-  private static final String GET_DECISION = "getDecision";
-
   private static final String USER_ID = "userID";
 
   private static final int COOKIE_MAX_AGE = 30 * 30 * 24 * 30;
@@ -41,9 +36,6 @@ public class CreditDecisionController extends HttpServlet {
 
   @Inject
   private volatile CreditDecisionStorage decisionStorage;
-
-  @Inject
-  private volatile FormDataStorage formDataStorage;
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
@@ -56,12 +48,6 @@ public class CreditDecisionController extends HttpServlet {
 
     try {
       String jsonRequest = req.getReader().readLine();
-      String jsonFormData = req.getReader().readLine();
-
-      if (jsonFormData != null) {
-        log.info("JSON form data: " + jsonFormData);
-        formDataStorage.put(userId, jsonFormData);
-      }
 
       if (jsonRequest != null && CreditRequestValidator.isValid(jsonRequest, PATH_TO_SCHEMA)) {
         log.info("JSON is valid: " + jsonRequest);
@@ -89,33 +75,8 @@ public class CreditDecisionController extends HttpServlet {
     String userId = getUserIdFromCookie(req);
 
     if (userId != null) {
-      String action = req.getParameter("action");
-      if (action.equals(GET_DATA)) {
-        String formData = formDataStorage.get(userId);
-        log.info("Form data received: " + formData);
-        writeFormDataToResponse(formData, resp);
-      } else if (action.equals(GET_DECISION)) {
-        CreditDecision creditDecision = decisionStorage.get(userId);
-        writeDecisionToResponse(creditDecision, resp);
-      }
-    }
-  }
-
-  private void writeFormDataToResponse(String formData, HttpServletResponse resp) {
-
-    if (formData != null) {
-      resp.setContentType("application/json");
-      resp.setCharacterEncoding("UTF-8");
-
-      try {
-        resp.getWriter().write(formData);
-      } catch (IOException e) {
-        log.error(e);
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      }
-
-    } else {
-      resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+      CreditDecision creditDecision = decisionStorage.get(userId);
+      writeDecisionToResponse(creditDecision, resp);
     }
   }
 

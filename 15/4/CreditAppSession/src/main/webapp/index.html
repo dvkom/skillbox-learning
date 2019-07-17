@@ -38,7 +38,7 @@
       $.ajax({
         type: "POST",
         url: "/decision",
-        data: JSON.stringify(copyOfKeyValuePairs) + "\n" + JSON.stringify(keyValuePairs),
+        data: JSON.stringify(copyOfKeyValuePairs),
         contentType: "application/json; charset=utf-8",
         dataType: "text",
         failure: function (errMsg) {
@@ -48,15 +48,16 @@
     }
 
     window.onload = function() {
-      $.get("/decision", {action: "getData"}, function (data) {
+      $.get("/decision", function (data) {
         if (data != null && data.toString() !== "") {
+
           $.each(data, function(name, val){
             const $el = $('[name="' + name + '"]'),
                 type = $el.attr('type');
 
             switch(type){
               case 'checkbox':
-                $el.attr('checked', 'checked');
+                $el.filter('[value="'+val+'"]').attr('checked', 'checked');
                 break;
               case 'radio':
                 $el.filter('[value="'+val+'"]').attr('checked', 'checked');
@@ -355,7 +356,7 @@
   <div class="w3-row w3-section w3-half">
   </div>
   <button id="toDecision" class="w3-button w3-block  w3-green w3-ripple w3-padding send-button" type="button"
-          onclick="window.location.href = '/decision?action=getDecision'">
+          onclick="window.location.href = '/decision'">
     Посмотреть результат
   </button>
 </form>
