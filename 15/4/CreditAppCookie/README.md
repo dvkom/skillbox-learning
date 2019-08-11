@@ -6,5 +6,7 @@
   * jackson for JSON to object mapping
   * json.schema for JSON validation
   * mapstruct for entity decoupling
-![CreditApp Image](https://raw.githubusercontent.com/dvkom/skillbox-learning/master/images/creditApp.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dvkom/skillbox-learning/master/images/creditApp.png">
+</p>
 

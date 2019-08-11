@@ -3,4 +3,6 @@
 * Multithreaded search and crawl through all links
 * Used by Swing GUI + jsoup
 * Clean MVP architecture
-![WebSpider Image](https://raw.githubusercontent.com/dvkom/skillbox-learning/master/images/webSpider.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dvkom/skillbox-learning/master/images/webSpider.png">
+</p>
