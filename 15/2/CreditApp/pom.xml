@@ -16,7 +16,7 @@
     <tomcat.version>9.0.21</tomcat.version>
     <taglibs.version>1.2.5</taglibs.version>
     <json.version>20180813</json.version>
-    <jackson.version>2.9.9</jackson.version>
+    <jackson.version>2.9.10.8</jackson.version>
     <everit.json.schema.version>1.5.1</everit.json.schema.version>
   </properties>
   <packaging>war</packaging>
